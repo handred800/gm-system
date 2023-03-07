@@ -1,0 +1,21 @@
+[
+    {
+      "id": "1",
+      "name": "eternal lance",
+      "quality": "epic",
+      "power": 12
+    },
+    {
+      "id": "2",
+      "name": "iron axe",
+      "quality": "good",
+      "power": 7
+    },
+    {
+      "id": "3",
+      "name": "long sword",
+      "quality": "normal",
+      "power": 4
+    }
+  ]
+  

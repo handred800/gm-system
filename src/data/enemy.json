@@ -1,0 +1,15 @@
+[
+    {
+      "id": 1,
+      "name": "Goblin",
+      "_hp": 25,
+      "_damage": 8
+    },
+    {
+      "id": 2,
+      "name": "Demon",
+      "_hp": 130,
+      "_damage": 15
+    }
+  ]
+  
