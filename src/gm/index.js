@@ -1,5 +1,6 @@
 import * as weapon from "./weapon";
 import * as character from "./character";
+import * as enemy from "./enemy"; 
 
 import { mathUtils } from "../utils";
 
@@ -22,12 +23,8 @@ export const playerInit = (config) => {
       this.weapon = weapon.build(rng().id);
       this.character.bindWeapon(this.weapon.power);
       console.log(
-        `${this.character.name} get a ${this.weapon.name}!, damage is ${this.character._damage}`
+        `${this.character.name} get a ${this.weapon.name}!, damage is ${this.character.atk}`
       );
-    }
-
-    dealHp(val) {
-      this.character.dealHp(val);
     }
   }
 
@@ -35,3 +32,13 @@ export const playerInit = (config) => {
   player.equipWeapon();
   return player;
 };
+
+export const oppositionInit = (config) => {
+  class OPPOSTION {
+    constructor(){
+      this.character = enemy.build(config);
+    }
+  }
+
+  return new OPPOSTION();
+}

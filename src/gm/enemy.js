@@ -8,7 +8,7 @@ class ENEMY {
   }
 }
 
-export const build = (id) => {
+export const build = ({id}) => {
   const data = find(db, (item) => item.id === id);
   return new ENEMY(data);
 };
