@@ -6,10 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "tailwind":"tailwind build tailwind.css -o ./src/assets/index.css"
+    "preview": "vite preview"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "vue": "^3.3.4"
   },
   "devDependencies": {
