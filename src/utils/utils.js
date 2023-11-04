@@ -3,3 +3,7 @@ export const wait = (s) => {
         setTimeout(() => resolve(), s * 1000);
     })
 }
+
+export const zeroToNArray = (n) => {
+    return Array.from(Array(n).keys());
+}

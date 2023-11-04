@@ -1,7 +1,9 @@
 <script setup>
-import { computed, reactive, ref, watchEffect } from 'vue';
+import { computed, reactive, ref, watchEffect, watch } from 'vue';
 import { wait } from './utils/utils';
-import { powerFunc } from './data/skill';
+import { flow } from 'lodash';
+import Deck from './components/Deck.vue';
+import { skills } from './data/skill';
 
 // player
 const player = reactive({
@@ -10,7 +12,10 @@ const player = reactive({
   hp: 100,
   atk: 10,
 })
-const powers = reactive(Object.keys(powerFunc));
+
+const playerSkills = reactive(skills);
+const pipeOrder = ref([]);
+const playerBuffFunc = computed(() => flow(pipeOrder.value.map((index) => playerSkills[index].func)))
 
 // enemy
 const enemy = reactive({
@@ -26,6 +31,9 @@ const roundCount = ref(0);
 const isActing = ref(false);
 const isEnemyTurn = computed(() => {
   return roundCount.value % 2 === 1;
+})
+const isPlayerDisabled = computed(() => {
+  return isActing.value || isEnemyTurn.value;
 })
 
 watchEffect(() => {
@@ -48,10 +56,10 @@ async function battleHandler(sender, taker, buffFunc) {
   isActing.value = false;
 }
 
-async function playerAttack(power) {
-  console.log(`player use ${power}`);
-  battleHandler(player, enemy, powerFunc[power]);
+function playerAttack() {
+  battleHandler(player, enemy, playerBuffFunc.value);
 }
+
 </script>
 
 <template>
@@ -72,9 +80,8 @@ async function playerAttack(power) {
         {{ enemy.hp }} / {{ enemy.maxHp }}
       </fieldset>
     </div>
-    <button class="btn" v-for="power in powers" :key="power" :disabled="isEnemyTurn || isActing" @click="playerAttack(power)">
-      {{ power }}
-    </button>
+    <deck :items="playerSkills" @play-card="(order) => {pipeOrder = order}"></deck>
+    <button class="btn" @click="playerAttack" :disabled="isPlayerDisabled">attack</button>
   </div>
 </template>
 

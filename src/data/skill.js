@@ -1,8 +1,10 @@
-export const powerFunc = {
-    powerA(input) {
-        return input + 3;
+export const skills = [
+    {
+        name: '+3',
+        func: (input) => input + 3
     },
-    powerB(input) {
-        return input * 2;
-    },
-}
+    {
+        name: '*2',
+        func: (input) => input * 2
+    }
+];
