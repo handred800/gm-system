@@ -1,8 +1,8 @@
 <script setup>
-import { computed, reactive, ref, watchEffect, watch } from 'vue';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { wait } from './utils/utils';
 import { flow } from 'lodash';
-import Deck from './components/Deck.vue';
+import { useBucket } from './composable/useBucket';
 import { skills } from './data/skill';
 
 // player
@@ -14,8 +14,8 @@ const player = reactive({
 })
 
 const playerSkills = reactive(skills);
-const pipeOrder = ref([]);
-const playerBuffFunc = computed(() => flow(pipeOrder.value.map((index) => playerSkills[index].func)))
+const skillsBucket = useBucket(playerSkills.length);
+const playerBuffFunc = computed(() => flow(skillsBucket.bucket.value.map((index) => playerSkills[index].func)))
 
 // enemy
 const enemy = reactive({
@@ -70,17 +70,24 @@ function playerAttack() {
   </div>
   <div id="battleScene" v-else>
     <div class="grid grid-cols-2 gap-4">
-      <fieldset class="shadow p-1 border-2 border-slate-300">
+      <fieldset class="shadow p-3 border-2 border-slate-300">
         <legend class="px-2 bg-slate-500 text-white">{{ player.name }}</legend>
         {{ player.hp }} / {{ player.maxHp }} 
       </fieldset>
     
-      <fieldset class="shadow p-1 border-2 border-slate-300">
+      <fieldset class="shadow p-3 border-2 border-slate-300">
         <legend class="px-2 bg-slate-500 text-white">{{ enemy.name }}</legend>
         {{ enemy.hp }} / {{ enemy.maxHp }}
       </fieldset>
+    </div>    
+    
+    <ul class="flex">
+        <li v-for="skillIndex in skillsBucket.bucket.value" :key="skillIndex">{{ playerSkills[skillIndex].name }}</li>
+    </ul>
+    <div class="flex">
+        <button class="btn" v-for="(skillIndex, i) in skillsBucket.pool.value" :key="skillIndex" @click="skillsBucket.addToBucket(i)">{{ playerSkills[skillIndex].name }}</button>
     </div>
-    <deck :items="playerSkills" @play-card="(order) => {pipeOrder = order}"></deck>
+    <button class="btn" @click="skillsBucket.reset">reset</button>
     <button class="btn" @click="playerAttack" :disabled="isPlayerDisabled">attack</button>
   </div>
 </template>
