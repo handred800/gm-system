@@ -76,25 +76,48 @@ function playerAttack() {
   </div>
   <div id="battleScene" v-else>
     <div class="grid grid-cols-2 gap-4">
-      <fieldset class="shadow p-3 border-2 border-slate-300">
-        <legend class="px-2 bg-slate-500 text-white">{{ player.name }}</legend>
-        {{ player.hp }} / {{ player.maxHp }} 
-      </fieldset>
+      <!-- player -->
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <div class="card-title">{{ player.name }}</div>
+          <div class="bg-slate-300 w-full h-4 rounded-full overflow-hidden">
+            <div class="h-4 duration-700 delay-300 out-expo bg-neutral" :style="{'width': `${(player.hp / player.maxHp) * 100}%` }"></div>
+          </div>
+          <div class="text-xs">{{ player.hp }} / {{ player.maxHp }}</div>
+        </div>
+      </div>
     
-      <fieldset class="shadow p-3 border-2 border-slate-300">
-        <legend class="px-2 bg-slate-500 text-white">{{ enemy.name }}</legend>
-        {{ enemy.hp }} / {{ enemy.maxHp }}
-      </fieldset>
-    </div>    
-    <log-panel :log-list="battleLog"></log-panel>
-    <ul class="flex">
-        <li v-for="skillIndex in skillsBucket.bucket.value" :key="skillIndex">{{ playerSkills[skillIndex].name }}</li>
-    </ul>
-    <div class="flex">
-        <button class="btn" v-for="(skillIndex, i) in skillsBucket.pool.value" :key="skillIndex" @click="skillsBucket.addToBucket(i)">{{ playerSkills[skillIndex].name }}</button>
+      <!-- enemy -->
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <div class="card-title">{{ enemy.name }}</div>
+          <div class="bg-slate-300 w-full h-4 rounded-full overflow-hidden">
+            <div class="h-4 duration-700 delay-300 out-expo bg-neutral" :style="{'width': `${(enemy.hp / enemy.maxHp) * 100}%` }"></div>
+          </div>
+          <div class="text-xs">{{ enemy.hp }} / {{ enemy.maxHp }}</div>
+        </div>
+      </div>
     </div>
-    <button class="btn" @click="skillsBucket.reset">reset</button>
-    <button class="btn" @click="playerAttack" :disabled="isPlayerDisabled">attack</button>
+    
+    <div>
+        <span class="inline-block p-2" v-for="skillIndex in skillsBucket.bucket.value" :key="skillIndex">{{ playerSkills[skillIndex].name }}</span>
+        <span class="inline-block p-2 font-bold">{{ skillsBucket.bucket.value.length <= 0 ? player.atk : Math.floor(playerBuffFunc(player.atk)) }}</span>
+    </div>
+
+    <log-panel :log-list="battleLog"></log-panel>
+    <!-- 操作區 -->
+    <div class="join">
+      <div class="indicator" v-for="(skillIndex, i) in skillsBucket.pool.value" :key="skillIndex"> 
+        <button class="btn join-item" @click="skillsBucket.addToBucket(i)">
+          {{ playerSkills[skillIndex].name }}
+          <span class="badge badge-neutral">{{ playerSkills[skillIndex].consume }}</span>
+        </button>
+      </div>
+    </div>
+    <div>
+      <button class="btn" @click="skillsBucket.reset">reset</button>
+      <button class="btn" @click="playerAttack" :disabled="isPlayerDisabled">attack</button>
+    </div>
   </div>
 </template>
 
