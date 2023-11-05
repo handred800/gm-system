@@ -4,6 +4,7 @@ import { wait } from './utils/utils';
 import { flow } from 'lodash';
 import { useBucket } from './composable/useBucket';
 import { skills } from './data/skill';
+import LogPanel from './components/LogPanel.vue';
 
 // player
 const player = reactive({
@@ -29,6 +30,7 @@ const enemy = reactive({
 const isBattleEnd = ref(false);
 const roundCount = ref(0);
 const isActing = ref(false);
+const battleLog = reactive([]);
 const isEnemyTurn = computed(() => {
   return roundCount.value % 2 === 1;
 })
@@ -46,9 +48,13 @@ async function battleHandler(sender, taker, buffFunc) {
   roundCount.value += 1;
   isActing.value = true;
 
-  const damage = buffFunc ? buffFunc(sender.atk) : sender.atk;
+  const damage = buffFunc ? Math.floor(buffFunc(sender.atk)) : Math.floor(sender.atk);
   taker.hp = taker.hp - damage <= 0 ? 0 : taker.hp - damage;
-  console.log(`${sender.name} 對 ${taker.name} 造成 ${damage} 傷害`);
+  
+  battleLog.push({
+    id: battleLog.length,
+    content: `${sender.name} 對 ${taker.name} 造成 ${damage} 傷害`
+  })
 
   // 結束檢查
   await wait(1);
@@ -80,7 +86,7 @@ function playerAttack() {
         {{ enemy.hp }} / {{ enemy.maxHp }}
       </fieldset>
     </div>    
-    
+    <log-panel :log-list="battleLog"></log-panel>
     <ul class="flex">
         <li v-for="skillIndex in skillsBucket.bucket.value" :key="skillIndex">{{ playerSkills[skillIndex].name }}</li>
     </ul>
