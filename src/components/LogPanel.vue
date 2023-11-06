@@ -1,9 +1,10 @@
 <script setup>
 import { ref, computed, watch, TransitionGroup } from 'vue';
+import { cloneDeep } from 'lodash';
 
 const props = defineProps(['logList'])
 const logs = computed(() => {
-  return props.logList.reverse();
+  return cloneDeep(props.logList).reverse();
 })
 
 const $panel = ref(null)
